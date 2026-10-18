@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- STYLE: Night maker's workbench (teal LED edge light against warm amber lamp glow, Chakra Petch for the gadget labels, Nunito for the warm notes) | WHY: Jack backs gadget after gadget on Kickstarter and throws a great party, so the gift lets him snap three gizmos into one contraption that switches on the party outside the window | ALT: Retro arcade scoreboard for his casual games interest, rejected because the gadgets are the truer, more personal thread -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Snap It Together</title>
+<meta name="description" content="A gadget workbench for Jack Bogdan.">
+<meta property="og:title" content="Snap It Together, for Jack">
+<meta property="og:image" content="https://gordonusc.github.io/gift-jack/img/hero.jpg">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Nunito:wght@600;800&display=swap">
+<style>
+:root{--teal:#3ee8ff;--amber:#ffb860;--ink:#0b1116;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#07090c;color:#f3f7fa;font:15px/1.45 Nunito,system-ui,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none;touch-action:none}
+.stage{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:min(100vw,calc(100svh*9/16));overflow:hidden;background:#07090c}
+.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.72)}
+.party{position:absolute;left:55%;right:0;top:0;height:36%;background:radial-gradient(ellipse at 60% 40%,#ffd59a,transparent 65%);opacity:0;mix-blend-mode:screen;transition:opacity 1.2s}
+.lit .party{opacity:.9}
+.lit .bg{filter:brightness(.95)}
+.top{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 14px);text-align:center;padding:0 18px;text-shadow:0 2px 14px #000d}
+.top small{font:700 11px "Chakra Petch",monospace;letter-spacing:.3em;color:var(--teal)}
+.top h1{font:700 clamp(28px,9vw,40px)/1.05 "Chakra Petch",monospace;margin:6px 0;letter-spacing:.02em}
+.top p{margin:0 auto;max-width:31ch;font-size:14.5px}
+.mat{position:absolute;left:37%;right:4%;top:56%;height:20%;border-radius:14px;border:2px dashed #3ee8ff88;box-shadow:inset 0 0 30px #3ee8ff22;display:flex;align-items:center;justify-content:center;gap:6%;transition:box-shadow .3s,border-color .3s}
+.mat.hot{border-color:var(--teal);box-shadow:inset 0 0 40px #3ee8ff55,0 0 24px #3ee8ff66}
+.mat .slot{width:24%;aspect-ratio:1;border-radius:12px;border:1px solid #3ee8ff44;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:700 10px "Chakra Petch",monospace;color:#3ee8ff88;letter-spacing:.08em}
+.mat .slot svg{width:52%;height:52%}
+.tray{transition:opacity .5s}
+.mat .slot.filled{border-color:var(--teal);background:#0b1116cc;box-shadow:0 0 18px #3ee8ff88;color:var(--teal)}
+.tray{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 40px);display:flex;justify-content:center;gap:14px;padding:10px;border-radius:16px;background:#0b1116dd;border:1px solid #ffffff22}
+.giz{width:82px;height:82px;border-radius:14px;border:2px solid var(--amber);background:radial-gradient(circle at 40% 30%,#2a3540,#0b1116);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:grab;touch-action:none;font:700 10px "Chakra Petch",monospace;letter-spacing:.06em;color:var(--amber)}
+.giz svg{width:38px;height:38px}
+.giz.gone{visibility:hidden}
+.giz.drag{position:fixed;z-index:9;cursor:grabbing;box-shadow:0 10px 30px #000a;pointer-events:none}
+.hint{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 140px);text-align:center;font:700 12px "Chakra Petch",monospace;letter-spacing:.14em;color:#fff;text-shadow:0 2px 8px #000}
+.end{position:absolute;left:16px;right:16px;top:30%;padding:18px;text-align:center;border-radius:16px;background:#0b1116ee;border:2px solid var(--teal);box-shadow:0 0 30px #3ee8ff55;opacity:0;transform:scale(.9);transition:all .6s;pointer-events:none}
+.end.on{opacity:1;transform:none;pointer-events:auto}
+.end h2{font:700 26px "Chakra Petch",monospace;margin:0 0 8px;color:var(--teal)}
+.end p{margin:0 auto;max-width:30ch}
+.end button{margin-top:14px;background:transparent;color:#fff;border:1px solid #ffffff66;border-radius:20px;padding:8px 16px;font:700 13px Nunito,sans-serif;cursor:pointer}
+canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.foot{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);text-align:center;font-size:11px;opacity:.75;text-shadow:0 1px 6px #000;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <img class="bg" src="img/hero.jpg" alt="A maker's workbench at night with a glowing desk mat, a mini laser projector and a party with string lights through the window">
+  <div class="party"></div>
+  <canvas id="c"></canvas>
+  <div class="top"><small>FOR JACK</small><h1>Snap It Together</h1><p>Three gizmos, one contraption. Drag each onto the glowing mat (or tap it) and see what it switches on.</p></div>
+  <div class="mat" id="mat"><div class="slot" data-k="laser">LASER</div><div class="slot" data-k="orb">ORB</div><div class="slot" data-k="cube">CUBE</div></div>
+  <div class="hint" id="hint">0 / 3 SNAPPED</div>
+  <div class="tray" id="tray">
+    <div class="giz" data-k="laser" role="button" tabindex="0" aria-label="Laser projector"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="6" y="12" width="22" height="16" rx="3" fill="#ffb860"/><circle cx="31" cy="20" r="4" fill="#3ee8ff"/><rect x="14" y="28" width="4" height="8" fill="#ffb860"/></svg>LASER</div>
+    <div class="giz" data-k="orb" role="button" tabindex="0" aria-label="Glow orb"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="18" r="12" fill="#3ee8ff" opacity=".8"/><rect x="10" y="30" width="20" height="5" rx="2" fill="#ffb860"/></svg>ORB</div>
+    <div class="giz" data-k="cube" role="button" tabindex="0" aria-label="LED cube"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 6 34 13v14l-14 7-14-7V13z" fill="#ffb860"/><path d="M20 20 34 13M20 20v14M20 20 6 13" stroke="#0b1116" stroke-width="2"/></svg>CUBE</div>
+  </div>
+  <div class="end" id="end"><h2>Built it, Jack.</h2><p>Friends since the IGDA days, at Gordon and Joe's wedding in 2014, and the host who throws a party to remember. Gordon is so glad you're the one plugging the lights in.</p><button id="again" type="button">Build it again</button></div>
+  <div class="foot">made by Darby, Gordon's AI assistant, with love from Gordon</div>
+</div>
+<script>
+// ElevenLabs sound design: magnetic snap, power-up chirp, party lights burst with cheers, electro funk workshop loop. Code only mixes.
+let ac=null, master=null, bufs={}, bed=null;
+function audio(){ if(!ac){ try{ ac=new (window.AudioContext||window.webkitAudioContext)(); master=ac.createGain(); master.gain.value=.9; master.connect(ac.destination); ['snap','power','party','bed'].forEach(load);}catch(e){} } if(ac&&ac.state==='suspended') ac.resume(); return ac; }
+async function load(n){ if(bufs[n]) return bufs[n]; try{ const r=await fetch('snd/'+n+'.mp3'); const a=await r.arrayBuffer(); bufs[n]=await new Promise((ok,no)=>ac.decodeAudioData(a,ok,no)); }catch(e){} return bufs[n]; }
+async function play(n,vol=1,loop=false,rate=1){ if(!audio()) return null; const b=await load(n); if(!b) return null; const s=ac.createBufferSource(), g=ac.createGain(); s.buffer=b; s.loop=loop; s.playbackRate.value=rate; g.gain.value=vol; s.connect(g).connect(master); s.start(); return {s,g}; }
+const $=s=>document.querySelector(s), stage=$('#stage'), mat=$('#mat');
+const c=$('#c'), x=c.getContext('2d'), D=Math.min(devicePixelRatio||1,2);
+function size(){ c.width=c.clientWidth*D; c.height=c.clientHeight*D; } size(); addEventListener('resize',size);
+let placed=new Set(), parts=[], beam=0, done=false;
+function center(el){ const r=el.getBoundingClientRect(), s=c.getBoundingClientRect(); return [(r.left+r.width/2-s.left)*D,(r.top+r.height/2-s.top)*D]; }
+function burst(px,py,cols,n=24){ for(let i=0;i<n;i++){ const a=i/n*Math.PI*2; parts.push({x:px,y:py,vx:Math.cos(a)*(2+i%4)*D,vy:Math.sin(a)*(2+i%3)*D-2*D,a:1,c:cols[i%cols.length],z:(3+i%3)*D}); } }
+function place(k){ if(placed.has(k)||done) return; audio(); if(!bed) play('bed',.28,true).then(h=>bed=h);
+  placed.add(k); document.querySelector('.giz[data-k="'+k+'"]').classList.add('gone'); const slot=mat.querySelector('.slot[data-k="'+k+'"]'); slot.classList.add('filled'); slot.innerHTML=document.querySelector('.giz[data-k="'+k+'"]').innerHTML;
+  play('snap',.9,false,1+placed.size*.06); const [px,py]=center(slot); burst(px,py,['#3ee8ff','#ffb860','#ffffff'],18);
+  $('#hint').textContent=placed.size+' / 3 SNAPPED';
+  if(placed.size===3){ done=true; $('#tray').style.opacity='0'; setTimeout(()=>{ play('power',.9); beam=0.01; },400); setTimeout(()=>{ stage.classList.add('lit'); play('party',.85); for(let i=0;i<6;i++) setTimeout(()=>{ burst(c.width*(.62+.06*i%3),c.height*(.12+.04*(i%2)),['#ffd59a','#ff7ad9','#7ad7ff','#9cff9c','#ffb860'],30); },i*220); $('#hint').textContent='PARTY: ON'; },1500); setTimeout(()=>$('#end').classList.add('on'),3300); } }
+// drag with pointer events (native drag blocked so mobile Safari keeps the gesture)
+document.querySelectorAll('.giz').forEach(g=>{
+  g.addEventListener('dragstart',e=>e.preventDefault());
+  g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); place(g.dataset.k); } });
+  g.addEventListener('pointerdown',e=>{ if(placed.has(g.dataset.k)||done) return; e.preventDefault(); audio(); const r=g.getBoundingClientRect(); const ghost=g.cloneNode(true); ghost.classList.add('drag'); ghost.style.left=r.left+'px'; ghost.style.top=r.top+'px'; document.body.appendChild(ghost);
+    const ox=e.clientX-r.left, oy=e.clientY-r.top, sx=e.clientX, sy=e.clientY; let moved=false;
+    const mv=ev=>{ if(Math.hypot(ev.clientX-sx,ev.clientY-sy)>6) moved=true; ghost.style.left=(ev.clientX-ox)+'px'; ghost.style.top=(ev.clientY-oy)+'px'; const m=mat.getBoundingClientRect(); mat.classList.toggle('hot',ev.clientX>m.left&&ev.clientX<m.right&&ev.clientY>m.top&&ev.clientY<m.bottom); };
+    const up=ev=>{ removeEventListener('pointermove',mv); removeEventListener('pointerup',up); removeEventListener('pointercancel',up); ghost.remove(); const m=mat.getBoundingClientRect(); const inMat=ev.clientX>m.left&&ev.clientX<m.right&&ev.clientY>m.top&&ev.clientY<m.bottom; mat.classList.remove('hot'); if(inMat||!moved) place(g.dataset.k); };
+    addEventListener('pointermove',mv); addEventListener('pointerup',up); addEventListener('pointercancel',up); });
+});
+$('#again').onclick=()=>{ placed.clear(); done=false; beam=0; stage.classList.remove('lit'); $('#end').classList.remove('on'); document.querySelectorAll('.giz').forEach(g=>g.classList.remove('gone')); mat.querySelectorAll('.slot').forEach(s=>{ s.classList.remove('filled'); s.textContent=s.dataset.k.toUpperCase(); }); $('#tray').style.opacity='1'; $('#hint').textContent='0 / 3 SNAPPED'; };
+(function loop(){ x.clearRect(0,0,c.width,c.height); const W=c.width,H=c.height;
+  if(beam>0){ beam=Math.min(beam+.03,1); const [mx,my]=center(mat), tx=W*.78, ty=H*.2; const ex=mx+(tx-mx)*beam, ey=my+(ty-my)*beam; x.strokeStyle='#3ee8ff'; x.shadowColor='#3ee8ff'; x.shadowBlur=18*D; x.lineWidth=3*D; x.beginPath(); x.moveTo(mx,my); x.lineTo(ex,ey); x.stroke(); x.shadowBlur=0; }
+  parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=.1*D; p.a-=.013; x.globalAlpha=Math.max(p.a,0); x.fillStyle=p.c; x.fillRect(p.x,p.y,p.z,p.z); }); x.globalAlpha=1; parts=parts.filter(p=>p.a>0);
+  requestAnimationFrame(loop); })();
+</script>
+</body>
+</html>
